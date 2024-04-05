@@ -53,8 +53,13 @@ final class VairogsBundle extends AbstractBundle
         }
     }
 
-    public static function componentEnabled(ContainerBuilder $builder, string $component): bool
+    public static function p(ContainerBuilder $builder, string $component, string $parameter): mixed
     {
-        return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, self::ENABLED));
+        return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, $parameter));
+    }
+
+    public static function enabled(ContainerBuilder $builder, string $component): bool
+    {
+        return self::p($builder, $component, self::ENABLED);
     }
 }
