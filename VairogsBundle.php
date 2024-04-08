@@ -19,8 +19,9 @@ final class VairogsBundle extends AbstractBundle
     public const string VAIROGS = 'vairogs';
     public const string ENABLED = 'enabled';
 
-    public function configure(DefinitionConfigurator $definition): void
-    {
+    public function configure(
+        DefinitionConfigurator $definition,
+    ): void {
         $rootNode = $definition
             ->rootNode();
 
@@ -40,8 +41,11 @@ final class VairogsBundle extends AbstractBundle
         }
     }
 
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
-    {
+    public function loadExtension(
+        array $config,
+        ContainerConfigurator $container,
+        ContainerBuilder $builder,
+    ): void {
         foreach ((new Iteration())->makeOneDimension([self::VAIROGS => $config]) as $key => $value) {
             $builder->setParameter($key, $value);
         }
@@ -53,13 +57,18 @@ final class VairogsBundle extends AbstractBundle
         }
     }
 
-    public static function p(ContainerBuilder $builder, string $component, string $parameter): mixed
-    {
+    public static function p(
+        ContainerBuilder $builder,
+        string $component,
+        string $parameter,
+    ): mixed {
         return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, $parameter));
     }
 
-    public static function enabled(ContainerBuilder $builder, string $component): bool
-    {
+    public static function enabled(
+        ContainerBuilder $builder,
+        string $component,
+    ): bool {
         return self::p($builder, $component, self::ENABLED);
     }
 }

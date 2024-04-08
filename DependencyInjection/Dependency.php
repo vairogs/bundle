@@ -27,7 +27,13 @@ interface Dependency
         VairogsBundle::VAIROGS . '/' . self::COMPONENT_DOCTRINE => DoctrineConfiguration::class,
     ];
 
-    public function addSection(ArrayNodeDefinition $rootNode, callable $enableIfStandalone): void;
+    public function addSection(
+        ArrayNodeDefinition $rootNode,
+        callable $enableIfStandalone,
+    ): void;
 
-    public function registerConfiguration(ContainerConfigurator $container, ContainerBuilder $builder): void;
+    public function registerConfiguration(
+        ContainerConfigurator $container,
+        ContainerBuilder $builder,
+    ): void;
 }
