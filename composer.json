@@ -10,14 +10,24 @@
     "minimum-stability": "dev",
     "prefer-stable": false,
     "config": {
-        "sort-packages": true,
-        "allow-plugins": {
-            "symfony/runtime": true
-        }
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
+    },
+    "require": {
+        "php": ">=8.3",
+        "symfony/config": "*",
+        "symfony/dependency-injection": "*",
+        "symfony/http-kernel": "*",
+        "vairogs/functions": "*"
+    },
+    "suggest": {
+        "vairogs/cache": "*",
+        "vairogs/doctrine-tools": "*",
+        "vairogs/mapper": "*",
+        "vairogs/settings": "*"
     }
 }
