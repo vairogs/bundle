@@ -7,8 +7,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Vairogs\Bundle\DependencyInjection\Dependency;
-use Vairogs\Component\Functions\Composer;
 use Vairogs\Component\Functions\Iteration;
+use Vairogs\Component\Functions\Local;
 use Vairogs\FullStack;
 
 use function class_exists;
@@ -29,13 +29,18 @@ final class VairogsBundle extends AbstractBundle
             $parentPackages = (array) $parentPackage;
             $parentPackages[] = sprintf('%s/bundle', self::VAIROGS);
 
-            return (new Composer())->willBeAvailable($package, $class, $parentPackages);
+            return (new class() {
+                use Local\_WillBeAvailable;
+            })->willBeAvailable($package, $class, $parentPackages);
         };
 
-        $enableIfStandalone = static fn (string $package, string $class) => !class_exists(FullStack::class) && $willBeAvailable($package, $class) ? 'canBeDisabled' : 'canBeEnabled';
+        $enableIfStandalone = static fn (string $package, string $class) => !class_exists(class: FullStack::class) && $willBeAvailable(package: $package, class: $class) ? 'canBeDisabled' : 'canBeEnabled';
 
+        $available = new class() {
+            use Local\_WillBeAvailable;
+        };
         foreach (Dependency::COMPONENTS as $package => $class) {
-            if ((new Composer())->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+            if ($available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
                 (new $class())->addSection($rootNode, $enableIfStandalone);
             }
         }
@@ -46,12 +51,17 @@ final class VairogsBundle extends AbstractBundle
         ContainerConfigurator $container,
         ContainerBuilder $builder,
     ): void {
-        foreach ((new Iteration())->makeOneDimension([self::VAIROGS => $config]) as $key => $value) {
+        foreach ((new class() {
+            use Iteration\_MakeOneDimension;
+        })->makeOneDimension([self::VAIROGS => $config]) as $key => $value) {
             $builder->setParameter($key, $value);
         }
 
+        $available = new class() {
+            use Local\_WillBeAvailable;
+        };
         foreach (Dependency::COMPONENTS as $package => $class) {
-            if ((new Composer())->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+            if ($available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
                 (new $class())->registerConfiguration($container, $builder);
             }
         }
