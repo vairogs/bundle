@@ -7,17 +7,18 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Vairogs\Bundle\DependencyInjection\Dependency;
+use Vairogs\Bundle\DependencyInjection\VairogsConfiguration;
 use Vairogs\Component\Functions\Iteration;
 use Vairogs\Component\Functions\Local;
 use Vairogs\FullStack;
 
+use function array_merge_recursive;
 use function class_exists;
 use function sprintf;
 
 final class VairogsBundle extends AbstractBundle
 {
     public const string VAIROGS = 'vairogs';
-    public const string ENABLED = 'enabled';
 
     public function configure(
         DefinitionConfigurator $definition,
@@ -39,9 +40,11 @@ final class VairogsBundle extends AbstractBundle
         $available = new class() {
             use Local\_WillBeAvailable;
         };
-        foreach (Dependency::COMPONENTS as $package => $class) {
-            if ($available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
-                (new $class())->addSection($rootNode, $enableIfStandalone);
+        foreach (Dependency::COMPONENTS as $component => $class) {
+            $package = self::VAIROGS . '/' . $component;
+            $object = new $class();
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+                $object->addSection($rootNode, $enableIfStandalone, $component);
             }
         }
     }
@@ -60,10 +63,46 @@ final class VairogsBundle extends AbstractBundle
         $available = new class() {
             use Local\_WillBeAvailable;
         };
-        foreach (Dependency::COMPONENTS as $package => $class) {
-            if ($available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
-                (new $class())->registerConfiguration($container, $builder);
+        foreach (Dependency::COMPONENTS as $component => $class) {
+            $package = self::VAIROGS . '/' . $component;
+            $object = new $class();
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+                if (!self::p($builder, $component, 'enabled')) {
+                    continue;
+                }
+
+                $object->registerConfiguration($container, $builder, $component);
             }
+        }
+    }
+
+    public function prependExtension(
+        ContainerConfigurator $container,
+        ContainerBuilder $builder,
+    ): void {
+        $vairogs = new VairogsConfiguration();
+
+        $usesDoctrine = false;
+        $available = new class() {
+            use Local\_WillBeAvailable;
+        };
+
+        foreach (Dependency::COMPONENTS as $component => $class) {
+            $package = self::VAIROGS . '/' . $component;
+            $object = new $class();
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+                $config = self::getConfig(self::VAIROGS, $builder)[$component] ?? [];
+                if (true !== ($config['enabled'] ?? false)) {
+                    continue;
+                }
+
+                $object->registerPreConfiguration($container, $builder, $component);
+                $usesDoctrine = $usesDoctrine || $object->usesDoctrine();
+            }
+        }
+
+        if ($usesDoctrine) {
+            $vairogs->registerGlobalMigrations($container, $builder);
         }
     }
 
@@ -75,10 +114,10 @@ final class VairogsBundle extends AbstractBundle
         return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, $parameter));
     }
 
-    public static function enabled(
+    public static function getConfig(
+        string $package,
         ContainerBuilder $builder,
-        string $component,
-    ): bool {
-        return self::p($builder, $component, self::ENABLED);
+    ): array {
+        return array_merge_recursive(...$builder->getExtensionConfig($package));
     }
 }
