@@ -28,6 +28,7 @@
         "vairogs/cache": "*",
         "vairogs/doctrine-tools": "*",
         "vairogs/mapper": "*",
-        "vairogs/settings": "*"
+        "vairogs/settings": "*",
+        "vairogs/audit": "*"
     }
 }
