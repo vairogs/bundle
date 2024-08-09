@@ -30,14 +30,14 @@ final class VairogsBundle extends AbstractBundle
             $parentPackages = (array) $parentPackage;
             $parentPackages[] = sprintf('%s/bundle', self::VAIROGS);
 
-            return (new class() {
+            return (new class {
                 use Local\_WillBeAvailable;
             })->willBeAvailable($package, $class, $parentPackages);
         };
 
         $enableIfStandalone = static fn (string $package, string $class) => !class_exists(class: FullStack::class) && $willBeAvailable(package: $package, class: $class) ? 'canBeDisabled' : 'canBeEnabled';
 
-        $available = new class() {
+        $available = new class {
             use Local\_WillBeAvailable;
         };
         foreach (Dependency::COMPONENTS as $component => $class) {
@@ -54,13 +54,13 @@ final class VairogsBundle extends AbstractBundle
         ContainerConfigurator $container,
         ContainerBuilder $builder,
     ): void {
-        foreach ((new class() {
+        foreach ((new class {
             use Iteration\_MakeOneDimension;
         })->makeOneDimension([self::VAIROGS => $config]) as $key => $value) {
             $builder->setParameter($key, $value);
         }
 
-        $available = new class() {
+        $available = new class {
             use Local\_WillBeAvailable;
         };
         foreach (Dependency::COMPONENTS as $component => $class) {
@@ -83,7 +83,7 @@ final class VairogsBundle extends AbstractBundle
         $vairogs = new VairogsConfiguration();
 
         $usesDoctrine = false;
-        $available = new class() {
+        $available = new class {
             use Local\_WillBeAvailable;
         };
 
