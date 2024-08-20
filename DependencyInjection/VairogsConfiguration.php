@@ -15,10 +15,15 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
-use function dirname;
-
 final class VairogsConfiguration extends AbstractDependencyConfiguration
 {
+    public function addSection(
+        ArrayNodeDefinition $rootNode,
+        callable $enableIfStandalone,
+        string $component,
+    ): void {
+    }
+
     public function registerGlobalMigrations(
         ContainerConfigurator $container,
         ContainerBuilder $builder,
@@ -27,17 +32,10 @@ final class VairogsConfiguration extends AbstractDependencyConfiguration
             if ($builder->hasExtension('doctrine_migrations')) {
                 $container->extension('doctrine_migrations', [
                     'migrations_paths' => [
-                        'Vairogs\\Bundle\\Migrations' => dirname(__DIR__) . '/Resources/migrations',
+                        'Vairogs\\Bundle\\Migrations' => __DIR__ . '/../Resources/migrations',
                     ],
                 ]);
             }
         }
-    }
-
-    public function addSection(
-        ArrayNodeDefinition $rootNode,
-        callable $enableIfStandalone,
-        string $component,
-    ): void {
     }
 }

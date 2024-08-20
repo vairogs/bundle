@@ -24,12 +24,6 @@ use Vairogs\Component\Settings\DependencyInjection\SettingsConfiguration;
 #[AutoconfigureTag]
 interface Dependency
 {
-    public const string COMPONENT_AUDIT = 'audit';
-    public const string COMPONENT_CACHE = 'cache';
-    public const string COMPONENT_DOCTRINE = 'doctrine_tools';
-    public const string COMPONENT_MAPPER = 'mapper';
-    public const string COMPONENT_SETTINGS = 'settings';
-
     public const array COMPONENTS = [
         self::COMPONENT_AUDIT => AuditConfiguration::class,
         self::COMPONENT_CACHE => CacheConfiguration::class,
@@ -37,6 +31,11 @@ interface Dependency
         self::COMPONENT_MAPPER => MapperConfiguration::class,
         self::COMPONENT_SETTINGS => SettingsConfiguration::class,
     ];
+    public const string COMPONENT_AUDIT = 'audit';
+    public const string COMPONENT_CACHE = 'cache';
+    public const string COMPONENT_DOCTRINE = 'doctrine_tools';
+    public const string COMPONENT_MAPPER = 'mapper';
+    public const string COMPONENT_SETTINGS = 'settings';
 
     public function addSection(
         ArrayNodeDefinition $rootNode,

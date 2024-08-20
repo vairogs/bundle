@@ -115,18 +115,18 @@ final class VairogsBundle extends AbstractBundle
         }
     }
 
+    public static function getConfig(
+        string $package,
+        ContainerBuilder $builder,
+    ): array {
+        return array_merge_recursive(...$builder->getExtensionConfig($package));
+    }
+
     public static function p(
         ContainerBuilder $builder,
         string $component,
         string $parameter,
     ): mixed {
         return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, $parameter));
-    }
-
-    public static function getConfig(
-        string $package,
-        ContainerBuilder $builder,
-    ): array {
-        return array_merge_recursive(...$builder->getExtensionConfig($package));
     }
 }
