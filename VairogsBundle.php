@@ -83,6 +83,8 @@ final class VairogsBundle extends AbstractBundle
                 $object->registerConfiguration($container, $builder, $component);
             }
         }
+
+        (new VairogsConfiguration())->registerConfiguration($container, $builder, '');
     }
 
     public function prependExtension(

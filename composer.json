@@ -19,6 +19,7 @@
     },
     "require": {
         "php": ">=8.3",
+        "doctrine/collections": "*",
         "symfony/config": "*",
         "symfony/dependency-injection": "*",
         "symfony/http-kernel": "*",
