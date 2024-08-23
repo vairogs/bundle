@@ -11,24 +11,27 @@
 
 namespace Vairogs\Bundle\Service;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
+use Vairogs\Bundle\Collection\SimpleArrayCollection;
+use Vairogs\Bundle\Collection\SimpleObjectCollection;
+use Vairogs\Bundle\Contracts\SimpleCollection;
 
 #[Autoconfigure(public: true)]
 final class RequestCache
 {
-    private ArrayCollection $cache;
+    private SimpleCollection $cache;
 
-    public function __construct()
-    {
-        $this->cache = new ArrayCollection();
+    public function __construct(
+        private readonly bool $useObject = true,
+    ) {
+        $this->cache = $this->new();
     }
 
     public function cache(
         string $cacheContext,
-    ): ArrayCollection {
+    ): SimpleCollection {
         if (!$this->cache->containsKey($cacheContext)) {
-            $this->cache->set($cacheContext, new ArrayCollection());
+            $this->cache->set($cacheContext, $this->new());
         }
 
         return $this->cache->get($cacheContext);
@@ -46,5 +49,10 @@ final class RequestCache
         }
 
         return $cache->get($key);
+    }
+
+    private function new(): SimpleCollection
+    {
+        return $this->useObject ? new SimpleObjectCollection() : new SimpleArrayCollection();
     }
 }
