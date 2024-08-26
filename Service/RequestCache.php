@@ -14,31 +14,32 @@ namespace Vairogs\Bundle\Service;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use Vairogs\Bundle\Collection\SimpleArrayCollection;
 use Vairogs\Bundle\Collection\SimpleObjectCollection;
+use Vairogs\Bundle\Constants\Context;
 use Vairogs\Bundle\Contracts\SimpleCollection;
 
 #[Autoconfigure(public: true)]
-final class RequestCache
+final readonly class RequestCache
 {
     private SimpleCollection $cache;
 
     public function __construct(
-        private readonly bool $useObject = true,
+        private bool $useObject = true,
     ) {
         $this->cache = $this->new();
     }
 
     public function cache(
-        string $cacheContext,
+        Context $cacheContext,
     ): SimpleCollection {
-        if (!$this->cache->containsKey($cacheContext)) {
-            $this->cache->set($cacheContext, $this->new());
+        if (!$this->cache->containsKey($cacheContext->value)) {
+            $this->cache->set($cacheContext->value, $this->new());
         }
 
-        return $this->cache->get($cacheContext);
+        return $this->cache->get($cacheContext->value);
     }
 
     public function get(
-        string $cacheContext,
+        Context $cacheContext,
         string $key,
         callable $callback,
     ): mixed {

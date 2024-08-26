@@ -250,6 +250,6 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     {
         return (new class {
             use _UniqueId;
-        })->uniqueId();
+        })->uniqueId(8);
     }
 }

@@ -19,6 +19,7 @@ use Vairogs\Bundle\DependencyInjection\Dependency;
 use Vairogs\Bundle\DependencyInjection\VairogsConfiguration;
 use Vairogs\Component\Functions\Iteration;
 use Vairogs\Component\Functions\Local;
+use Vairogs\Component\Functions\Vairogs;
 use Vairogs\FullStack;
 
 use function array_merge_recursive;
@@ -27,8 +28,6 @@ use function sprintf;
 
 final class VairogsBundle extends AbstractBundle
 {
-    public const string VAIROGS = 'vairogs';
-
     public function configure(
         DefinitionConfigurator $definition,
     ): void {
@@ -37,7 +36,7 @@ final class VairogsBundle extends AbstractBundle
 
         $willBeAvailable = static function (string $package, string $class, ?string $parentPackage = null) {
             $parentPackages = (array) $parentPackage;
-            $parentPackages[] = sprintf('%s/bundle', self::VAIROGS);
+            $parentPackages[] = sprintf('%s/bundle', Vairogs::VAIROGS);
 
             return (new class {
                 use Local\_WillBeAvailable;
@@ -50,9 +49,9 @@ final class VairogsBundle extends AbstractBundle
             use Local\_WillBeAvailable;
         };
         foreach (Dependency::COMPONENTS as $component => $class) {
-            $package = self::VAIROGS . '/' . $component;
+            $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
                 $object->addSection($rootNode, $enableIfStandalone, $component);
             }
         }
@@ -65,7 +64,7 @@ final class VairogsBundle extends AbstractBundle
     ): void {
         foreach ((new class {
             use Iteration\_MakeOneDimension;
-        })->makeOneDimension([self::VAIROGS => $config]) as $key => $value) {
+        })->makeOneDimension([Vairogs::VAIROGS => $config]) as $key => $value) {
             $builder->setParameter($key, $value);
         }
 
@@ -73,9 +72,9 @@ final class VairogsBundle extends AbstractBundle
             use Local\_WillBeAvailable;
         };
         foreach (Dependency::COMPONENTS as $component => $class) {
-            $package = self::VAIROGS . '/' . $component;
+            $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
                 if (!self::p($builder, $component, 'enabled')) {
                     continue;
                 }
@@ -99,10 +98,10 @@ final class VairogsBundle extends AbstractBundle
         };
 
         foreach (Dependency::COMPONENTS as $component => $class) {
-            $package = self::VAIROGS . '/' . $component;
+            $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', self::VAIROGS)])) {
-                $config = self::getConfig(self::VAIROGS, $builder)[$component] ?? [];
+            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
+                $config = self::getConfig(Vairogs::VAIROGS, $builder)[$component] ?? [];
                 if (true !== ($config['enabled'] ?? false)) {
                     continue;
                 }
@@ -129,6 +128,6 @@ final class VairogsBundle extends AbstractBundle
         string $component,
         string $parameter,
     ): mixed {
-        return $builder->getParameter(sprintf('%s.%s.%s', self::VAIROGS, $component, $parameter));
+        return $builder->getParameter(sprintf('%s.%s.%s', Vairogs::VAIROGS, $component, $parameter));
     }
 }
