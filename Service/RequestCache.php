@@ -42,14 +42,45 @@ final readonly class RequestCache
         Context $cacheContext,
         string $key,
         callable $callback,
+        string ...$subkeys,
     ): mixed {
         $cache = $this->cache($cacheContext);
 
-        if (!$cache->containsKey($key)) {
-            $cache->set($key, $callback());
+        $currentKey = $key;
+        foreach ($subkeys as $subkey) {
+            if (!$cache->containsKey($currentKey)) {
+                $cache->set($currentKey, $this->new());
+            }
+            $cache = $cache->get($currentKey);
+            $currentKey = $subkey;
         }
 
-        return $cache->get($key);
+        if (!$cache->containsKey($currentKey)) {
+            $cache->set($currentKey, $callback());
+        }
+
+        return $cache->get($currentKey);
+    }
+
+    public function getValue(
+        Context $cacheContext,
+        string $key,
+        mixed $default = null,
+        string ...$subkeys,
+    ): mixed {
+        $cache = $this->cache($cacheContext);
+
+        $currentKey = $key;
+
+        foreach ($subkeys as $subkey) {
+            if (!$cache->containsKey($currentKey)) {
+                return $default;
+            }
+            $cache = $cache->get($currentKey);
+            $currentKey = $subkey;
+        }
+
+        return $cache->containsKey($currentKey) ? $cache->get($currentKey) : $default;
     }
 
     private function new(): SimpleCollection
