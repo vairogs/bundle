@@ -58,9 +58,9 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     }
 
     public function containsKey(
-        string $key,
+        int|string $key,
     ): bool {
-        return property_exists($this->elements, $key);
+        return property_exists($this->elements, (string) $key);
     }
 
     public function count(): int
@@ -84,6 +84,7 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
         callable $predicate,
     ): self {
         $filteredElements = new stdClass();
+
         foreach ($this->elements as $key => $element) {
             if ($predicate($key, $element)) {
                 $filteredElements->{$key} = $element;
@@ -106,9 +107,9 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     }
 
     public function get(
-        string $key,
+        int|string $key,
     ): mixed {
-        return $this->elements->{$key} ?? null;
+        return $this->elements->{(string) $key} ?? null;
     }
 
     public function getIterator(): ArrayIterator
@@ -137,6 +138,7 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
         callable $func,
     ): self {
         $mappedElements = new stdClass();
+
         foreach ($this->elements as $key => $element) {
             $mappedElements->{$key} = $func($element);
         }
@@ -174,6 +176,7 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     ): array {
         $matches = new stdClass();
         $noMatches = new stdClass();
+
         foreach ($this->elements as $key => $element) {
             if ($predicate($key, $element)) {
                 $matches->{$key} = $element;
@@ -186,11 +189,11 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     }
 
     public function remove(
-        string $key,
+        int|string $key,
     ): mixed {
         if ($this->containsKey($key)) {
-            $removedElement = $this->elements->{$key};
-            unset($this->elements->{$key});
+            $removedElement = $this->elements->{(string) $key};
+            unset($this->elements->{(string) $key});
 
             return $removedElement;
         }
@@ -213,10 +216,10 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
     }
 
     public function set(
-        string $key,
+        int|string $key,
         mixed $value,
     ): void {
-        $this->elements->{$key} = $value;
+        $this->elements->{(string) $key} = $value;
     }
 
     public function slice(
@@ -233,6 +236,7 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
                 $added++;
             }
             $currentOffset++;
+
             if (null !== $length && $added >= $length) {
                 break;
             }
@@ -248,8 +252,14 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
 
     private function generateKey(): string
     {
-        return (new class {
-            use _UniqueId;
-        })->uniqueId(8);
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use _UniqueId;
+            };
+        }
+
+        return $_helper->uniqueId(8);
     }
 }

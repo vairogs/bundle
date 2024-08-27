@@ -34,24 +34,28 @@ final class VairogsBundle extends AbstractBundle
         $rootNode = $definition
             ->rootNode();
 
-        $willBeAvailable = static function (string $package, string $class, ?string $parentPackage = null) {
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use Local\_WillBeAvailable;
+            };
+        }
+
+        $willBeAvailable = static function (string $package, string $class, ?string $parentPackage = null) use ($_helper) {
             $parentPackages = (array) $parentPackage;
             $parentPackages[] = sprintf('%s/bundle', Vairogs::VAIROGS);
 
-            return (new class {
-                use Local\_WillBeAvailable;
-            })->willBeAvailable($package, $class, $parentPackages);
+            return $_helper->willBeAvailable($package, $class, $parentPackages);
         };
 
         $enableIfStandalone = static fn (string $package, string $class) => !class_exists(class: FullStack::class) && $willBeAvailable(package: $package, class: $class) ? 'canBeDisabled' : 'canBeEnabled';
 
-        $available = new class {
-            use Local\_WillBeAvailable;
-        };
         foreach (Dependency::COMPONENTS as $component => $class) {
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
+
+            if ($object instanceof Dependency && $_helper->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
                 $object->addSection($rootNode, $enableIfStandalone, $component);
             }
         }
@@ -62,19 +66,24 @@ final class VairogsBundle extends AbstractBundle
         ContainerConfigurator $container,
         ContainerBuilder $builder,
     ): void {
-        foreach ((new class {
-            use Iteration\_MakeOneDimension;
-        })->makeOneDimension([Vairogs::VAIROGS => $config]) as $key => $value) {
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use Iteration\_MakeOneDimension;
+                use Local\_WillBeAvailable;
+            };
+        }
+
+        foreach ($_helper->makeOneDimension([Vairogs::VAIROGS => $config]) as $key => $value) {
             $builder->setParameter($key, $value);
         }
 
-        $available = new class {
-            use Local\_WillBeAvailable;
-        };
         foreach (Dependency::COMPONENTS as $component => $class) {
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
+
+            if ($object instanceof Dependency && $_helper->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
                 if (!self::p($builder, $component, 'enabled')) {
                     continue;
                 }
@@ -93,15 +102,22 @@ final class VairogsBundle extends AbstractBundle
         $vairogs = new VairogsConfiguration();
 
         $usesDoctrine = false;
-        $available = new class {
-            use Local\_WillBeAvailable;
-        };
+
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use Local\_WillBeAvailable;
+            };
+        }
 
         foreach (Dependency::COMPONENTS as $component => $class) {
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
-            if ($object instanceof Dependency && $available->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
+
+            if ($object instanceof Dependency && $_helper->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
                 $config = self::getConfig(Vairogs::VAIROGS, $builder)[$component] ?? [];
+
                 if (true !== ($config['enabled'] ?? false)) {
                     continue;
                 }

@@ -54,7 +54,7 @@ final class SimpleArrayCollection implements Countable, IteratorAggregate, Array
     }
 
     public function containsKey(
-        mixed $key,
+        int|string $key,
     ): bool {
         return array_key_exists($key, $this->elements);
     }
@@ -156,6 +156,7 @@ final class SimpleArrayCollection implements Countable, IteratorAggregate, Array
     ): array {
         $matches = [];
         $noMatches = [];
+
         foreach ($this->elements as $key => $element) {
             if ($predicate($key, $element)) {
                 $matches[$key] = $element;
@@ -184,6 +185,7 @@ final class SimpleArrayCollection implements Countable, IteratorAggregate, Array
         mixed $element,
     ): bool {
         $key = array_search($element, $this->elements, true);
+
         if (false !== $key) {
             unset($this->elements[$key]);
 
@@ -194,14 +196,10 @@ final class SimpleArrayCollection implements Countable, IteratorAggregate, Array
     }
 
     public function set(
-        int|string|null $key,
+        int|string $key,
         mixed $value,
     ): void {
-        if (null === $key) {
-            $this->elements[] = $value;
-        } else {
-            $this->elements[$key] = $value;
-        }
+        $this->elements[$key] = $value;
     }
 
     public function slice(

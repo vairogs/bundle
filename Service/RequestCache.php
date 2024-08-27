@@ -23,7 +23,7 @@ final readonly class RequestCache
     private SimpleCollection $cache;
 
     public function __construct(
-        private bool $useObject = true,
+        private bool $useObject = false,
     ) {
         $this->cache = $this->new();
     }
@@ -40,19 +40,20 @@ final readonly class RequestCache
 
     public function get(
         Context $cacheContext,
-        string $key,
+        int|string $key,
         callable $callback,
-        string ...$subkeys,
+        string ...$subKeys,
     ): mixed {
         $cache = $this->cache($cacheContext);
 
         $currentKey = $key;
-        foreach ($subkeys as $subkey) {
+
+        foreach ($subKeys as $subKey) {
             if (!$cache->containsKey($currentKey)) {
                 $cache->set($currentKey, $this->new());
             }
             $cache = $cache->get($currentKey);
-            $currentKey = $subkey;
+            $currentKey = $subKey;
         }
 
         if (!$cache->containsKey($currentKey)) {
@@ -64,20 +65,20 @@ final readonly class RequestCache
 
     public function getValue(
         Context $cacheContext,
-        string $key,
+        int|string $key,
         mixed $default = null,
-        string ...$subkeys,
+        string ...$subKeys,
     ): mixed {
         $cache = $this->cache($cacheContext);
 
         $currentKey = $key;
 
-        foreach ($subkeys as $subkey) {
+        foreach ($subKeys as $subKey) {
             if (!$cache->containsKey($currentKey)) {
                 return $default;
             }
             $cache = $cache->get($currentKey);
-            $currentKey = $subkey;
+            $currentKey = $subKey;
         }
 
         return $cache->containsKey($currentKey) ? $cache->get($currentKey) : $default;
@@ -85,6 +86,9 @@ final readonly class RequestCache
 
     private function new(): SimpleCollection
     {
-        return $this->useObject ? new SimpleObjectCollection() : new SimpleArrayCollection();
+        return match ($this->useObject) {
+            false => new SimpleArrayCollection(),
+            true => new SimpleObjectCollection(),
+        };
     }
 }
