@@ -235,6 +235,7 @@ class SimpleObjectCollection implements Countable, IteratorAggregate, ArrayAcces
                 $slicedElements->{$key} = $element;
                 $added++;
             }
+
             $currentOffset++;
 
             if (null !== $length && $added >= $length) {

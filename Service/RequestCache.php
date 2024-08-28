@@ -52,6 +52,7 @@ final readonly class RequestCache
             if (!$cache->containsKey($currentKey)) {
                 $cache->set($currentKey, $this->new());
             }
+
             $cache = $cache->get($currentKey);
             $currentKey = $subKey;
         }
@@ -77,6 +78,7 @@ final readonly class RequestCache
             if (!$cache->containsKey($currentKey)) {
                 return $default;
             }
+
             $cache = $cache->get($currentKey);
             $currentKey = $subKey;
         }
