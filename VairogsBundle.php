@@ -28,6 +28,18 @@ use function sprintf;
 
 final class VairogsBundle extends AbstractBundle
 {
+    public function build(
+        ContainerBuilder $container,
+    ): void {
+        foreach (Dependency::COMPONENTS as $class) {
+            $object = new $class();
+
+            if ($object instanceof Dependency) {
+                $object->build();
+            }
+        }
+    }
+
     public function configure(
         DefinitionConfigurator $definition,
     ): void {
