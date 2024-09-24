@@ -31,15 +31,29 @@ final class VairogsBundle extends AbstractBundle
     public function build(
         ContainerBuilder $container,
     ): void {
-        foreach (Dependency::COMPONENTS as $class) {
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use Local\_Exists;
+                use Local\_WillBeAvailable;
+            };
+        }
+
+        foreach (Dependency::COMPONENTS as $component => $class) {
+            if (!$_helper->exists($class)) {
+                continue;
+            }
+
+            $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
 
-            if ($object instanceof Dependency) {
-                $object->build();
+            if ($object instanceof Dependency && $_helper->willBeAvailable($package, $class, [sprintf('%s/bundle', Vairogs::VAIROGS)])) {
+                $object->build($container);
             }
         }
 
-        (new VairogsConfiguration())->build();
+        (new VairogsConfiguration())->build($container);
     }
 
     public function configure(
@@ -52,6 +66,7 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
+                use Local\_Exists;
                 use Local\_WillBeAvailable;
             };
         }
@@ -66,6 +81,10 @@ final class VairogsBundle extends AbstractBundle
         $enableIfStandalone = static fn (string $package, string $class) => !class_exists(class: FullStack::class) && $willBeAvailable(package: $package, class: $class) ? 'canBeDisabled' : 'canBeEnabled';
 
         foreach (Dependency::COMPONENTS as $component => $class) {
+            if (!$_helper->exists($class)) {
+                continue;
+            }
+
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
 
@@ -85,6 +104,7 @@ final class VairogsBundle extends AbstractBundle
         if (null === $_helper) {
             $_helper = new class {
                 use Iteration\_MakeOneDimension;
+                use Local\_Exists;
                 use Local\_WillBeAvailable;
             };
         }
@@ -94,6 +114,10 @@ final class VairogsBundle extends AbstractBundle
         }
 
         foreach (Dependency::COMPONENTS as $component => $class) {
+            if (!$_helper->exists($class)) {
+                continue;
+            }
+
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
 
@@ -121,11 +145,16 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
+                use Local\_Exists;
                 use Local\_WillBeAvailable;
             };
         }
 
         foreach (Dependency::COMPONENTS as $component => $class) {
+            if (!$_helper->exists($class)) {
+                continue;
+            }
+
             $package = Vairogs::VAIROGS . '/' . $component;
             $object = new $class();
 

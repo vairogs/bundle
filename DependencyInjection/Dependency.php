@@ -23,13 +23,14 @@ use Vairogs\Component\Mapper\DependencyInjection\MapperConfiguration;
 interface Dependency
 {
     public const array COMPONENTS = [
+        self::COMPONENT_CACHE_WARMER => CacheWarmerConfiguration::class,
         self::COMPONENT_DOCTRINE => DoctrineToolsConfiguration::class,
         self::COMPONENT_MAPPER => MapperConfiguration::class,
-        self::COMPONENT_CACHE_WARMER => CacheWarmerConfiguration::class,
     ];
+
+    public const string COMPONENT_CACHE_WARMER = 'cache_warmer';
     public const string COMPONENT_DOCTRINE = 'doctrine_tools';
     public const string COMPONENT_MAPPER = 'mapper';
-    public const string COMPONENT_CACHE_WARMER = 'cache_warmer';
 
     public function addSection(
         ArrayNodeDefinition $rootNode,
@@ -37,7 +38,9 @@ interface Dependency
         string $component,
     ): void;
 
-    public function build(): void;
+    public function build(
+        ContainerBuilder $container,
+    ): void;
 
     public function registerConfiguration(
         ContainerConfigurator $container,

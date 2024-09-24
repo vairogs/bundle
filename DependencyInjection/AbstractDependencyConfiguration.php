@@ -35,8 +35,9 @@ abstract class AbstractDependencyConfiguration implements Dependency
                 ->end();
     }
 
-    public function build(): void
-    {
+    public function build(
+        ContainerBuilder $container,
+    ): void {
     }
 
     public function registerConfiguration(
