@@ -38,6 +38,8 @@ final class VairogsBundle extends AbstractBundle
                 $object->build();
             }
         }
+
+        (new VairogsConfiguration())->build();
     }
 
     public function configure(

@@ -26,5 +26,9 @@
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
+    },
+    "suggest": {
+        "doctrine/dbal": "*",
+        "doctrine/migrations": "*"
     }
 }
