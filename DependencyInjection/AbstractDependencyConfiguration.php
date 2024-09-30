@@ -11,10 +11,10 @@
 
 namespace Vairogs\Bundle\DependencyInjection;
 
-use ReflectionClass;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Vairogs\Component\Functions\Php;
 use Vairogs\Component\Functions\Vairogs;
 
 use function dirname;
@@ -45,7 +45,15 @@ abstract class AbstractDependencyConfiguration implements Dependency
         ContainerBuilder $builder,
         string $component,
     ): void {
-        $path = dirname((new ReflectionClass(static::class))->getFileName(), 2) . '/Resources/config/services.php';
+        static $_helper = null;
+
+        if (null === $_helper) {
+            $_helper = new class {
+                use Php\_GetReflection;
+            };
+        }
+
+        $path = dirname($_helper->getReflection(static::class)->getFileName(), 2) . '/Resources/config/services.php';
 
         if (is_file($path)) {
             $container->import($path);
