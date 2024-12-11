@@ -14,8 +14,8 @@ namespace Vairogs\Bundle\DependencyInjection;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Vairogs\Bundle\VairogsBundle;
 use Vairogs\Component\Functions\Php;
-use Vairogs\Component\Functions\Vairogs;
 
 use function dirname;
 use function is_file;
@@ -31,7 +31,7 @@ abstract class AbstractDependencyConfiguration implements Dependency
         $rootNode
             ->children()
                 ->arrayNode($component)
-                    ->{$enableIfStandalone(sprintf('%s/%s', Vairogs::VAIROGS, $component), self::class)}()
+                    ->{$enableIfStandalone(sprintf('%s/%s', VairogsBundle::VAIROGS, $component), self::class)}()
                 ->end();
     }
 

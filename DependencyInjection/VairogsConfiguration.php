@@ -38,4 +38,16 @@ final class VairogsConfiguration extends AbstractDependencyConfiguration
             }
         }
     }
+
+    public function registerPreConfiguration(
+        ContainerConfigurator $container,
+        ContainerBuilder $builder,
+        string $component,
+    ): void {
+        if ($builder->hasExtension('framework')) {
+            $container->extension('framework', [
+                'set_locale_from_accept_language' => true,
+            ]);
+        }
+    }
 }
