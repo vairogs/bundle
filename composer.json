@@ -19,9 +19,14 @@
     },
     "require": {
         "php": ">=8.4",
+        "api-platform/symfony": "*",
+        "api-platform/metadata": "*",
         "symfony/config": "*",
         "symfony/dependency-injection": "*",
+        "symfony/event-dispatcher": "*",
+        "symfony/finder": "*",
         "symfony/http-kernel": "*",
+        "symfony/serializer": "*",
         "vairogs/functions": "*"
     },
     "require-dev": {
