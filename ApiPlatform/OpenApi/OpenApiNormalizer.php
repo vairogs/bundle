@@ -16,13 +16,13 @@ use Symfony\Component\DependencyInjection\Attribute\AsDecorator;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Vairogs\Bundle\Constants\BundleContext;
 use Vairogs\Bundle\Service\RequestCache;
-use Vairogs\Component\Functions\Text;
+use Vairogs\Functions\Text;
 
 #[AsDecorator(decorates: 'api_platform.openapi.normalizer.api_gateway')]
 readonly class OpenApiNormalizer implements NormalizerInterface
 {
-    final protected const string REF = 'iri-reference';
     final protected const string DEFAULT_EXAMPLE = 'https://example.com/';
+    final protected const string REF = 'iri-reference';
 
     public function __construct(
         private NormalizerInterface $decorated,
@@ -59,7 +59,7 @@ readonly class OpenApiNormalizer implements NormalizerInterface
 
         if (null === $_helper) {
             $_helper = new class {
-                use Text\_Pluralize;
+                use Text\Traits\_Pluralize;
             };
         }
 
@@ -73,7 +73,7 @@ readonly class OpenApiNormalizer implements NormalizerInterface
 
         if (null === $_helper) {
             $_helper = new class {
-                use Text\_Singularize;
+                use Text\Traits\_Singularize;
             };
         }
 

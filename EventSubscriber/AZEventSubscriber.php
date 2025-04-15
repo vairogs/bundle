@@ -19,8 +19,8 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Vairogs\Bundle\ApiPlatform\Functions;
 use Vairogs\Bundle\Service\RequestCache;
-use Vairogs\Bundle\Traits\_GetReadProperty;
-use Vairogs\Component\Functions\Iteration;
+use Vairogs\Bundle\Traits;
+use Vairogs\Functions\Iteration;
 
 use function array_key_exists;
 use function array_map;
@@ -53,8 +53,8 @@ readonly class AZEventSubscriber implements EventSubscriberInterface
 
         if (null === $_helper) {
             $_helper = new class {
-                use Iteration\_JsonDecode;
-                use Iteration\_JsonEncode;
+                use Iteration\Traits\_JsonDecode;
+                use Iteration\Traits\_JsonEncode;
             };
         }
 
@@ -93,13 +93,13 @@ readonly class AZEventSubscriber implements EventSubscriberInterface
 
                 if (null === $_helper) {
                     $_helper = new class {
-                        use _GetReadProperty;
-                        use Iteration\_JsonDecode;
-                        use Iteration\_JsonEncode;
+                        use Iteration\Traits\_JsonDecode;
+                        use Iteration\Traits\_JsonEncode;
+                        use Traits\_GetReadProperty;
                     };
                 }
 
-                $data = $_helper->jsonDecode($serialized, Iteration::ASSOCIATIVE);
+                $data = $_helper->jsonDecode($serialized, 1);
                 $rp = $_helper->getReadProperty($class, $this->requestCache);
 
                 if (null !== $data && array_key_exists('@type', $data)) {

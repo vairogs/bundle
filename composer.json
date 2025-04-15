@@ -1,33 +1,21 @@
 {
     "name": "vairogs/bundle",
-    "type": "symfony-bundle",
     "license": "BSD-3-Clause",
-    "autoload": {
-        "psr-4": {
-            "Vairogs\\Bundle\\": ""
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": false,
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "0.1.x-dev"
-        }
-    },
+    "type": "symfony-bundle",
     "require": {
         "php": ">=8.4",
-        "api-platform/symfony": "*",
         "api-platform/metadata": "*",
+        "api-platform/symfony": "*",
         "symfony/config": "*",
         "symfony/dependency-injection": "*",
         "symfony/event-dispatcher": "*",
         "symfony/finder": "*",
         "symfony/http-kernel": "*",
         "symfony/serializer": "*",
-        "vairogs/functions": "*"
+        "vairogs/functions-iteration": "*",
+        "vairogs/functions-local": "*",
+        "vairogs/functions-php": "*",
+        "vairogs/functions-text": "*"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
@@ -35,5 +23,20 @@
     "suggest": {
         "doctrine/dbal": "*",
         "doctrine/migrations": "*"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false,
+    "autoload": {
+        "psr-4": {
+            "Vairogs\\Bundle\\": ""
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.1.x-dev"
+        }
     }
 }

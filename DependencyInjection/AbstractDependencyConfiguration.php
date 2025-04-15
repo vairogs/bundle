@@ -15,7 +15,7 @@ use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Vairogs\Bundle\VairogsBundle;
-use Vairogs\Component\Functions\Php;
+use Vairogs\Functions\Php;
 
 use function dirname;
 use function is_file;
@@ -49,7 +49,7 @@ abstract class AbstractDependencyConfiguration implements Dependency
 
         if (null === $_helper) {
             $_helper = new class {
-                use Php\_GetReflection;
+                use Php\Traits\_GetReflection;
             };
         }
 

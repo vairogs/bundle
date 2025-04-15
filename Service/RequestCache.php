@@ -12,7 +12,7 @@
 namespace Vairogs\Bundle\Service;
 
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
-use Vairogs\Component\Functions\Memoize;
+use Vairogs\Functions\Memoize\Memoize;
 
 #[Autoconfigure(public: true, shared: true)]
 final class RequestCache extends Memoize

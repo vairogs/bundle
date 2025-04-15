@@ -15,7 +15,7 @@ use ReflectionClass;
 use ReflectionException;
 use Vairogs\Bundle\Constants\BundleContext;
 use Vairogs\Bundle\Service\RequestCache;
-use Vairogs\Component\Functions\Php;
+use Vairogs\Functions\Php;
 
 use function is_object;
 
@@ -38,7 +38,7 @@ trait _LoadReflection
 
         if (null === $_helper) {
             $_helper = new class {
-                use Php\_GetReflection;
+                use Php\Traits\_GetReflection;
             };
         }
 

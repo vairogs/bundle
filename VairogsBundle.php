@@ -18,9 +18,9 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Vairogs\Bundle\DependencyInjection\Dependency;
 use Vairogs\Bundle\DependencyInjection\VairogsConfiguration;
-use Vairogs\Component\Functions\Iteration;
-use Vairogs\Component\Functions\Local;
 use Vairogs\FullStack;
+use Vairogs\Functions\Iteration;
+use Vairogs\Functions\Local;
 
 use function array_merge_recursive;
 use function class_exists;
@@ -39,8 +39,8 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
-                use Local\_Exists;
-                use Local\_WillBeAvailable;
+                use Local\Traits\_Exists;
+                use Local\Traits\_WillBeAvailable;
             };
         }
 
@@ -71,8 +71,8 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
-                use Local\_Exists;
-                use Local\_WillBeAvailable;
+                use Local\Traits\_Exists;
+                use Local\Traits\_WillBeAvailable;
             };
         }
 
@@ -111,9 +111,9 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
-                use Iteration\_MakeOneDimension;
-                use Local\_Exists;
-                use Local\_WillBeAvailable;
+                use Iteration\Traits\_MakeOneDimension;
+                use Local\Traits\_Exists;
+                use Local\Traits\_WillBeAvailable;
             };
         }
 
@@ -155,8 +155,8 @@ final class VairogsBundle extends AbstractBundle
 
         if (null === $_helper) {
             $_helper = new class {
-                use Local\_Exists;
-                use Local\_WillBeAvailable;
+                use Local\Traits\_Exists;
+                use Local\Traits\_WillBeAvailable;
             };
         }
 

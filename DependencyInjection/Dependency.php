@@ -18,6 +18,7 @@ use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigura
 use Vairogs\Component\CacheWarmer\DependencyInjection\CacheWarmerConfiguration;
 use Vairogs\Component\DoctrineTools\DependencyInjection\DoctrineToolsConfiguration;
 use Vairogs\Component\Mapper\DependencyInjection\MapperConfiguration;
+use Vairogs\Component\SpxProfiler\DependencyInjection\SpxProfilerConfiguration;
 
 #[AutoconfigureTag]
 interface Dependency
@@ -26,11 +27,13 @@ interface Dependency
         self::COMPONENT_CACHE_WARMER => CacheWarmerConfiguration::class,
         self::COMPONENT_DOCTRINE => DoctrineToolsConfiguration::class,
         self::COMPONENT_MAPPER => MapperConfiguration::class,
+        self::COMPONENT_SPX_PROFILER => SpxProfilerConfiguration::class,
     ];
 
     public const string COMPONENT_CACHE_WARMER = 'cache_warmer';
     public const string COMPONENT_DOCTRINE = 'doctrine_tools';
     public const string COMPONENT_MAPPER = 'mapper';
+    public const string COMPONENT_SPX_PROFILER = 'spx_profiler';
 
     public function addSection(
         ArrayNodeDefinition $rootNode,
