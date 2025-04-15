@@ -12,10 +12,10 @@
         "symfony/finder": "*",
         "symfony/http-kernel": "*",
         "symfony/serializer": "*",
-        "vairogs/functions-iteration": "*",
-        "vairogs/functions-local": "*",
-        "vairogs/functions-php": "*",
-        "vairogs/functions-text": "*"
+        "vairogs/functions-iteration": "self.version",
+        "vairogs/functions-local": "self.version",
+        "vairogs/functions-php": "self.version",
+        "vairogs/functions-text": "self.version"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"
