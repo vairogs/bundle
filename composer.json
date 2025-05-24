@@ -12,6 +12,7 @@
         "symfony/finder": "*",
         "symfony/http-kernel": "*",
         "symfony/serializer": "*",
+        "symfony/validator": "*",
         "vairogs/functions-iteration": "self.version",
         "vairogs/functions-local": "self.version",
         "vairogs/functions-php": "self.version",
