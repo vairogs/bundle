@@ -13,9 +13,9 @@ namespace Vairogs\Bundle\Traits;
 
 use ApiPlatform\Metadata\ApiProperty;
 use ReflectionException;
+use Symfony\Component\Validator\Exception\MappingException;
 use Vairogs\Bundle\Constants\BundleContext;
-use Vairogs\Bundle\Service\RequestCache;
-use Vairogs\Component\Mapper\Exception\MappingException;
+use Vairogs\Functions\Memoize\MemoizeCache;
 
 use function is_object;
 
@@ -26,13 +26,13 @@ trait _GetReadProperty
      */
     public function getReadProperty(
         object|string $class,
-        RequestCache $requestCache,
+        MemoizeCache $memoize,
     ): string {
         if (is_object($class)) {
             $class = $class::class;
         }
 
-        return $requestCache->memoize(BundleContext::READ_PROPERTY, $class, static function () use ($class, $requestCache) {
+        return $memoize->memoize(BundleContext::READ_PROPERTY, $class, static function () use ($class, $memoize) {
             $property = null;
 
             static $_helper = null;
@@ -43,7 +43,7 @@ trait _GetReadProperty
                 };
             }
 
-            foreach ($_helper->loadReflection($class, $requestCache)->getProperties() as $reflectionProperty) {
+            foreach ($_helper->loadReflection($class, $memoize)->getProperties() as $reflectionProperty) {
                 if ([] !== ($attributes = $reflectionProperty->getAttributes(ApiProperty::class))) {
                     $prop = $attributes[0]->newInstance();
 

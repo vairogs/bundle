@@ -13,7 +13,7 @@ namespace Vairogs\Bundle\Traits;
 
 use PhpToken;
 use Vairogs\Bundle\Constants\BundleContext;
-use Vairogs\Bundle\Service\RequestCache;
+use Vairogs\Functions\Memoize\MemoizeCache;
 
 use function array_slice;
 use function file_get_contents;
@@ -27,13 +27,13 @@ trait _GetClassFromFile
 {
     public function getClassFromFile(
         ?string $file,
-        RequestCache $requestCache,
+        MemoizeCache $memoize,
     ): ?string {
         if (null === $file) {
             return null;
         }
 
-        return $requestCache->memoize(BundleContext::CALLER_CLASS, $file, static function () use ($file) {
+        return $memoize->memoize(BundleContext::CALLER_CLASS, $file, static function () use ($file) {
             $namespace = '';
             $tokens = PhpToken::tokenize(code: file_get_contents(filename: $file));
 

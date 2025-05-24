@@ -10,6 +10,7 @@
  */
 
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Vairogs\Functions\Memoize\MemoizeCache;
 
 return static function (
     ContainerConfigurator $container,
@@ -22,4 +23,6 @@ return static function (
 
     $services->load(namespace: 'Vairogs\\Bundle\\', resource: __DIR__ . '/../../*')
         ->exclude(excludes: [__DIR__ . '/../../{Entity,Resources}']);
+
+    $services->set(MemoizeCache::class);
 };

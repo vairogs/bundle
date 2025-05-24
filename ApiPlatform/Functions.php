@@ -13,14 +13,14 @@ namespace Vairogs\Bundle\ApiPlatform;
 
 use ApiPlatform\Metadata\ApiResource;
 use ReflectionException;
-use Vairogs\Bundle\Service\RequestCache;
 use Vairogs\Bundle\Traits\_LoadReflection;
 use Vairogs\Component\Mapper\Attribute\SimpleApiResource;
+use Vairogs\Functions\Memoize\MemoizeCache;
 
 readonly class Functions
 {
     public function __construct(
-        private RequestCache $requestCache,
+        private MemoizeCache $memoize,
     ) {
     }
 
@@ -38,7 +38,7 @@ readonly class Functions
             };
         }
 
-        $reflection = $_helper->loadReflection($object, $this->requestCache);
+        $reflection = $_helper->loadReflection($object, $this->memoize);
 
         return [] !== $reflection->getAttributes(ApiResource::class) || [] !== $reflection->getAttributes(SimpleApiResource::class);
     }

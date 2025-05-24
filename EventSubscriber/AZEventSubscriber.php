@@ -18,9 +18,9 @@ use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Vairogs\Bundle\ApiPlatform\Functions;
-use Vairogs\Bundle\Service\RequestCache;
 use Vairogs\Bundle\Traits;
 use Vairogs\Functions\Iteration;
+use Vairogs\Functions\Memoize\MemoizeCache;
 
 use function array_key_exists;
 use function array_map;
@@ -34,7 +34,7 @@ readonly class AZEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private Functions $functions,
-        private RequestCache $requestCache,
+        private MemoizeCache $memoize,
     ) {
     }
 
@@ -100,7 +100,7 @@ readonly class AZEventSubscriber implements EventSubscriberInterface
                 }
 
                 $data = $_helper->jsonDecode($serialized, 1);
-                $rp = $_helper->getReadProperty($class, $this->requestCache);
+                $rp = $_helper->getReadProperty($class, $this->memoize);
 
                 if (null !== $data && array_key_exists('@type', $data)) {
                     if ('Collection' === $data['@type']) {

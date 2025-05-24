@@ -14,7 +14,7 @@ namespace Vairogs\Bundle\Traits;
 use ReflectionClass;
 use ReflectionException;
 use Vairogs\Bundle\Constants\BundleContext;
-use Vairogs\Bundle\Service\RequestCache;
+use Vairogs\Functions\Memoize\MemoizeCache;
 use Vairogs\Functions\Php;
 
 use function is_object;
@@ -26,7 +26,7 @@ trait _LoadReflection
      */
     public function loadReflection(
         object|string $objectOrClass,
-        RequestCache $requestCache,
+        MemoizeCache $memoize,
     ): ReflectionClass {
         $class = $objectOrClass;
 
@@ -42,8 +42,8 @@ trait _LoadReflection
             };
         }
 
-        $reflection = $requestCache->memoize(BundleContext::REFLECTION, $class, static fn () => $_helper->getReflection($objectOrClass));
-        $requestCache->memoize(BundleContext::REFLECTION, $reflection->getName(), static fn () => $reflection);
+        $reflection = $memoize->memoize(BundleContext::REFLECTION, $class, static fn () => $_helper->getReflection($objectOrClass));
+        $memoize->memoize(BundleContext::REFLECTION, $reflection->getName(), static fn () => $reflection);
 
         return $reflection;
     }
